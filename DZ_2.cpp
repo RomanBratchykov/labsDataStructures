@@ -1,9 +1,22 @@
 #include <iostream>
+#include <cmath>
 
 void fillArray(int arr[], int size){
     for (int i = 0; i < size; i++){
         arr[i] = rand() % 201-100;
     }
+}
+
+bool isPrimeNumber(int number)
+{
+    if (number < 2) return false;
+
+    for (int i = 2; i * i <= number; i++) 
+    {
+        if (number % i == 0) return false;
+    }
+    
+    return true;
 }
 
 void bubbleSort(int* ptr, int size, std::string order = "asc"){
@@ -33,7 +46,7 @@ int main()
         }
 
         switch (num){
-            case 1:
+        case 1:
         {
         std::cout << "Enter the size of the array: \n";
         int size;
@@ -106,7 +119,53 @@ int main()
         break;
         case 3:
         {
-            
+            std::cout << "Enter n for number of rows and m for number of columns\n";
+            int n, m;
+            std::cin >> n >> m;
+            int arr[n][m];
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < m; j++){
+                    arr[i][j] = rand() % 201 - 100;
+                }
+            }
+            std::cout <<"Your array: \n";
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < m; j++){
+                    std::cout << arr[i][j] << " ";
+                }
+                std::cout << "\n";
+            }
+            int sortedArray[n][m];
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < m; j++){
+                    sortedArray[i][j] = arr[i][j];
+                }
+            }
+
+            for (int i = 0; i < n; i++){
+                bubbleSort(sortedArray[i], m);
+            }
+            std::cout << "Sorted array: \n";
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < m; j++){
+                    std::cout << sortedArray[i][j] << " ";
+                }
+                std::cout << "\n";
+            }
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < m; j++){
+                       if(isPrimeNumber(arr[i][j])) {
+                        arr[i][j] = 0;
+                       }
+                    }  
+            }
+            std::cout <<"array with 0 instead of prime numbers\n";
+                for (int i = 0; i < n; i++){
+                    for (int j = 0; j < m; j++){
+                        std::cout << arr[i][j] << " ";
+                    }
+                    std::cout << "\n";
+                }
         }
         default:
         {
