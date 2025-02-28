@@ -92,7 +92,7 @@ int main() {
     srand(time(0));
     while (1){
     int size;
-    std::cout << "enter size of array: (0 to exit)\n";
+    std::cout << "enter size of array: (0 to exit, size should be multiple of 4)\n";
     std::cin >> size;
     if (size == 0){
         break;
@@ -129,6 +129,8 @@ int main() {
     double time_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
     std::cout << "time: " << time_elapsed << "s\n";
     size_t memory_size = size * sizeof(float);
+    memory_size += size * sizeof(float);
+    memory_size += size * sizeof(float);
     textfile << i + 1 << "\t" << size << "\t   " << time_elapsed << "\t        " << memory_size << "\n";
     
 }
