@@ -52,8 +52,28 @@ struct book {
     int numberOfPages;
 };
 
-int main() {
+std::string bookTitles[10] = {
+    "The Great Gatsby", "To Kill a Mockingbird", "1984", "Pride and Prejudice", "The Catcher in the Rye",
+    "The Lord of the Rings", "Animal Farm", "The Hobbit", "The Little Prince", "Brave New World"
+};
 
+std::string authors[10] = {
+    "F. Scott Fitzgerald", "Harper Lee", "George Orwell", "Jane Austen", "J.D. Salinger",
+    "J.R.R. Tolkien", "George Orwell", "J.R.R. Tolkien", "Antoine de Saint-Exupery", "Aldous Huxley"
+};
+
+int years[10] = {
+    1925, 1960, 1949, 1813, 1951,
+    2010, 2021, 2050, 2000, 1992
+};
+
+int numberOfPages[10] = {
+    180, 200, 250, 300, 350,
+    400, 450, 500, 550, 600
+};
+
+int main() {
+    srand(time(0));
     std::cout << "Choose task:(1-3, 0 for exit)\n";
     int task;
     std::cin >> task;
@@ -125,7 +145,35 @@ int main() {
         break;
         case 3:
         {
-
+            std::cout << "Enter number of books\n";
+            int num;
+            std::cin >> num;
+            book books[num];
+            for (int i = 0; i < num; i++)
+            {
+                books[i].bookTitle = bookTitles[rand() % 10];
+                books[i].author = authors[rand() % 10];
+                books[i].year = years[rand() % 10];
+                books[i].numberOfPages = numberOfPages[rand() % 10];
+            }
+            std::cout << "Your books:\n";
+            int totalPages = 0;
+            for (int i = 0; i < num; i++)
+            {
+                totalPages += books[i].numberOfPages;
+                std::cout << "=====================================\n";
+                std::cout << "Title: " << books[i].bookTitle << "\nAuthor: " << books[i].author << "\nYear: " << books[i].year << "\nNumber of pages: " << books[i].numberOfPages << "\n";
+            }
+            std::cout << "=====================================\n";
+            std::cout << "Total number of pages = " << totalPages << "\n";
+            std::cout << "Books with more than 300 pages and written after 2000 year:\n";
+            for (int i = 0; i < num; i++)
+            {
+                if (books[i].numberOfPages > 300 && books[i].year > 2000){
+                std::cout << "=====================================\n";
+                std::cout << "Title: " << books[i].bookTitle << "\nAuthor: " << books[i].author << "\nYear: " << books[i].year << "\nNumber of pages: " << books[i].numberOfPages << "\n";
+                }
+            }
         }
         break;
         default: 
