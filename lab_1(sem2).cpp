@@ -124,7 +124,6 @@ int main() {
     std::cout << "sorted matrix: \n";
     sortMatrix(matrix, size);
     showMatrix(matrix, size);
-
     clock_t end = clock();
     double time_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
     std::cout << "time: " << time_elapsed << "s\n";
@@ -132,7 +131,6 @@ int main() {
     memory_size += size * sizeof(float);
     memory_size += size * sizeof(float);
     textfile << i + 1 << "\t" << size << "\t   " << time_elapsed << "\t        " << memory_size << "\n";
-    
 }
     textfile.close();
     std::cout << "data saved to file and file closed\n";
