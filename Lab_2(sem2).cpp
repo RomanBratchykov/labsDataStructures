@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 
 void fillArray(int arr[], int size)
 {
@@ -158,7 +159,7 @@ int main() {
                 std::cout << "Matrix: \n";
                 for (int i = 0; i < size; i++){
                     for (int j = 0; j < size; j++){
-                        std::cout << matrix[i][j] << " ";
+                        std::cout << std::setw(3) << matrix[i][j] << " ";
                     }
                     std::cout << "\n";
                 }
@@ -181,7 +182,7 @@ int main() {
                 std::cout << "New matrix: \n";
                 for (int i = 0; i < size; i++){
                     for (int j = 0; j < size; j++){
-                        std::cout << matrix[i][j] << " ";
+                        std::cout << std::setw(3) << matrix[i][j] << " ";
                     }
                     std::cout << "\n";
                 }
@@ -192,7 +193,7 @@ int main() {
                 std::cout << "Final matrix: \n";
                 for (int i = 0; i < size; i++){
                     for (int j = 0; j < size; j++){
-                        std::cout << matrix[i][j] << " ";
+                        std::cout <<std::setw(3) << matrix[i][j] << " ";
                     }
                     std::cout << "\n";
                 }
@@ -210,22 +211,18 @@ int main() {
                 std::cout << "Matrix: \n";
                 for (int i = 0; i < size; i++){
                     for (int j = 0; j < size; j++){
-                        std::cout << matrix[i][j] << " ";
+                        std::cout << std::setw(3)<< matrix[i][j] << " ";
                     }
                     std::cout << "\n";
                 }
 
                 for (int i = 0; i < size; i++){
-                    for (int j = 0; j < size - 1 ; j++){
-                        if (i == j){
-                            for (int k = j; k < size - 1; k++){
-                                int temp = matrix[i][k];
-                                matrix[i][k] = matrix[i][k + 1];
-                                matrix[i][k + 1] = temp;
-                            }
-                        }
+                    for (int k = i; k < size - 1; k++){
+                        int temp = matrix[i][k];
+                        matrix[i][k] = matrix[i][k + 1];
+                        matrix[i][k + 1] = temp;
                     }
-                }
+               }
                 int max = matrix[0][0];
                 int maxIndexI = 0;
                 for (int i = 0; i < size; i++){
@@ -237,8 +234,8 @@ int main() {
                     }
                 }
                 
-                for (int i = maxIndexI; i < size; i++){
-                    for (int j = 0; j < size - 1; j++){
+                for (int i = maxIndexI; i < size - 1; i++){
+                    for (int j = 0; j < size; j++){
                         int temp = matrix[i][j];
                         matrix[i][j] = matrix[i + 1][j];
                         matrix[i + 1][j] = temp;
@@ -248,7 +245,7 @@ int main() {
                 std::cout << "New matrix: \n";
                 for (int i = 0; i < size; i++){
                     for (int j = 0; j < size; j++){
-                        std::cout << matrix[i][j] << " ";
+                        std::cout <<std::setw(3) << matrix[i][j] << " ";
                     }
                     std::cout << "\n";
                 }
