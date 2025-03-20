@@ -11,7 +11,24 @@ struct Students {
     int studentHeight;
     int studentWeight;
     Students* next;
-};
+}*studentsHead = nullptr, *studentsTail = nullptr;
+
+
+void addStudent(std::string studentName, int studentHeight, int studentWeight){
+    Students* newStudent = new Students;
+    newStudent->studentName = studentName;
+    newStudent->studentHeight = studentHeight;
+    newStudent->studentWeight = studentWeight;
+    newStudent->next = nullptr;
+    if (studentsHead == nullptr){
+        studentsHead = newStudent;
+        studentsTail = newStudent;
+    }
+    else{
+        studentsTail->next = newStudent;
+        studentsTail = newStudent;
+    }
+}
 
 void addNumber(int number) {
     Numbers* newNumber = new Numbers;
@@ -109,7 +126,7 @@ double findAverage(Numbers* head){
     return sum / count;
 }
 
-void deleteNumber(Numbers*& head){
+void deleteFirstEvenNumber(Numbers*& head){
     Numbers* temp = head;
     while (temp != nullptr){
         if (temp->number % 2 == 0){
@@ -196,7 +213,7 @@ int main() {
                 std::cout << "List: \n";
                 showList(head);
                 std::cout << "Average: " << findAverage(head) << "\n";
-                deleteNumber(head);
+                deleteFirstEvenNumber(head);
                 std::cout << "List after deleting first even number: \n";
                 showList(head);
                 clearList();
@@ -238,7 +255,73 @@ int main() {
             break;
             case 3:
             {
-
+                std::cout << "Enter number of students\n";
+                int number;
+                std::cin >> number;
+                if (number <= 0){
+                    std::cout << "Number of students should be more than 0\n";
+                    break;
+                }
+                for (int i = 0; i < number; i++){
+                    std::string studentName;
+                    int studentHeight, studentWeight;
+                    std::cout << "Enter student name:\n";
+                    std::cin >> studentName;
+                    std::cout << "Enter student height:\n";
+                    std::cin >> studentHeight;
+                    std::cout << "Enter student weight:\n";
+                    std::cin >> studentWeight;
+                    addStudent(studentName, studentHeight, studentWeight);
+                }
+                Students* temp = studentsHead;
+                int minWeight = temp->studentWeight;
+                int counterForA = 0;
+                std::cout << "Students: \n";
+                while (temp != nullptr){
+                    if (temp->studentName[0] == 'a' && temp->studentHeight > 170)
+                        counterForA++;
+                    if (temp->studentWeight < minWeight){
+                        minWeight = temp->studentWeight;
+                    }
+                    std::cout << "Name: " << temp->studentName << " Height: " << temp->studentHeight << " Weight: " << temp->studentWeight << "\n";
+                    temp = temp->next;
+                }
+                temp = studentsHead;
+                if (counterForA == 0){
+                    std::cout << "There is no students that have name starting with 'a' and height more than 170\n";
+                }
+                else{
+                    std::cout << "Students with height more than 170 and whose name starts with 'a':\n";
+                    while (temp != nullptr){
+                        if (temp->studentName[0] == 'a' && temp->studentHeight > 170)
+                            std::cout << "Name: " << temp->studentName << " Height: " << temp->studentHeight << " Weight: " << temp->studentWeight << "\n";
+                        temp = temp->next;
+                    }
+                }
+                temp = studentsHead;
+                while (temp != nullptr){
+                    if (temp->studentWeight == minWeight){
+                        Students* toDelete = temp;
+                        temp = temp->next;
+                        studentsHead = temp;
+                        delete toDelete;
+                        break;
+                    }
+                    else if (temp->next->studentWeight == minWeight){
+                        Students* toDelete = temp->next;
+                        temp->next = temp->next->next;
+                        delete toDelete;
+                        break;
+                    }
+                    temp = temp->next;
+                }   
+                std::cout << "List without student with min weight: \n";
+                temp = studentsHead;
+                while (temp != nullptr){
+                    std::cout << "Name: " << temp->studentName << " Height: " << temp->studentHeight << " Weight: " << temp->studentWeight << "\n";
+                    temp = temp->next;
+                }
+                clearList();
             }
             break;
             default:
