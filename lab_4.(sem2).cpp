@@ -3,9 +3,12 @@
 #include <iomanip>
 
 bool isVowel(char letter){
-    if (letter == 'a' || letter == 'A' || letter == 'o' || letter == 'O' || letter == 'i' || letter == 'I' || letter == 'u' || letter == 'U' || letter == 'e' || letter == 'E' || letter == 'y' || letter == 'Y')
-        return true;
-    return false;
+    tolower(letter);
+    std::string vowels = "aeiuo";
+    for (int i = 0; i < vowels.length(); i++){
+        if (letter == vowels[i])
+            return true;
+    }
 }
 
 struct Students {
@@ -51,7 +54,7 @@ void studentsWithMoreThanAverage(Students* array, int size, double average){
     std::cout << "---------------------------\n";
 }
 
-void studentsstartsWithVowel(Students* studentsArray, int size){
+void studentsStartsWithVowel(Students* studentsArray, int size){
     bool studentsWithVowel = false; 
     for (int i = 0; i < size; i++)
     {
@@ -75,7 +78,7 @@ void studentsstartsWithVowel(Students* studentsArray, int size){
         std::cout << "There is no students that have vowel on start of their surname \n";
 
         for (int i = 0; i < size; i++) {
-            if(isVowel(studentsArray[i].studentName[i])){
+            if(isVowel(studentsArray[i].studentName[0])){
             std::cout << "------------------------------------------------------------------------------------------\n";
             std::cout << "|"
             << std::setw(18) << studentsArray[i].studentName << "|"
@@ -108,7 +111,7 @@ void bubbleSort(double arr[], int size, std::string order = "asc"){
     }
 }
 
-void createArray(Students* studentsArray, int size){
+void createGradesArray(Students* studentsArray, int size){
     double* arrayOfAverage = new double[size];
     std::cout << "Average grades in array: \n";
     for (int i = 0; i < size; i++){
@@ -183,6 +186,8 @@ int main() {
         }
         Students* studentsArray = new Students[number];
         std::cout << "Your array of students: \n";
+        std::cout << "------------------------------------------------------------------------------------------\n";
+
         std::cout << "|"
         << std::setw(19) << "Name|"
         << std::setw(8) << "Group|"
@@ -214,8 +219,8 @@ int main() {
         }
         std::cout << "------------------------------------------------------------------------------------------\n";
         studentsWithMoreThanAverage(studentsArray, number, 4);
-        studentsstartsWithVowel(studentsArray, number);
-        createArray(studentsArray, number);
+        studentsStartsWithVowel(studentsArray, number);
+        createGradesArray(studentsArray, number);
         delete[] studentsArray;
         }
         return 0;
