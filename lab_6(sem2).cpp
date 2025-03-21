@@ -1,6 +1,31 @@
 #include <iostream>
 
 
+std::string cities[10] = {
+    "Bento",
+    "Canoas",
+    "Caxias",
+    "Erechim",
+    "Kola",
+    "Lajeado",
+    "Bruhn",
+    "Pato",
+    "Poetto",
+    "Slell"
+};
+
+std::string cars[10] = {
+    "Audi",
+    "BMW",
+    "Chevrolet",
+    "Fiat",
+    "Ford",
+    "Honda",
+    "Hyundai",
+    "Kia",
+    "Mazda",
+    "Mercedes"
+};
 struct Numbers {
     int number;
     Numbers* next;
@@ -151,6 +176,7 @@ void showList(Numbers* head){
     std::cout << "\n";
 }
 
+
 int main() {
     srand(time(0));
     while (1)
@@ -164,11 +190,91 @@ int main() {
             return 0;
             case 1:
             {
-            }
+                std::cout << "Enter number of cities:\n";
+                int num;
+                std::cin >> num;
+                if (num <=0){
+                    std::cout << "List should contain at least 1 element\n";
+                    break;
+                }
+                for (int i = 0; i < num; i++){
+                    addCity(cities[rand() % 10], rand() % 10000 + 200);
+                }
+                Cities* temp = citiesHead;
+                Cities* maxDistance = temp;
+                Cities* secondMaxDistance = temp;
+                while (temp != nullptr){
+                    if (temp->distance > maxDistance->distance){
+                        secondMaxDistance = maxDistance;
+                        maxDistance = temp;
+                    }
+                    else if (temp->distance > secondMaxDistance->distance){
+                        secondMaxDistance = temp;
+                    }
+                    std::cout << "City: " << temp->name << "\nDistance: " << temp->distance << "\n";
+                    temp = temp->next;
+                }
+                std::cout << "City with max distance: " << maxDistance->name << " " << maxDistance->distance << "\n";
+                std::cout << "City with second max distance: " << secondMaxDistance->name << " " << secondMaxDistance->distance << "\n";
+                std::cout << "Enter name of city and distance to add:\n";
+                std::string name;
+                int distance;
+                std::cin >> name >> distance;
+                if (distance <= 0){
+                    std::cout << "Distance should be greater than 0\n";
+                    break;
+                }
+                addCity(name, distance);
+                temp = citiesHead;
+                while (temp != nullptr){
+                    std::cout << "City: " << temp->name << "\nDistance: " << temp->distance << "\n";
+                    temp = temp->next;
+                }
+                clearList();
+            }   
             break;
             case 2:
             {
-                
+                std::cout << "Enter number of cars and current year:\n";
+                int num, currentYear;
+                std::cin >> num >> currentYear;
+                if (currentYear < 1965){
+                    std::cout << "Cars in our garage only from after 1965\n";
+                    break;
+                }
+                if (num <=0){
+                    std::cout << "List should contain at least 1 element\n";
+                    break;
+                }
+                for (int i = 0; i < num; i++){
+                    addCar(cars[rand() % 10], rand() % 61 + 1965, rand() % 10000 + 2000);
+                }
+                Cars* temp = carsHead;
+                std::cout << "List of cars:\n";
+                int counterForCars = 0;
+                while (temp){
+                    if (temp->year < currentYear - 10 && temp->price < 5000)
+                        counterForCars++;
+                    std::cout << "----------------\n";
+                    std::cout << "Brand: " << temp->brand << "\nYear: " << temp->year << "\nPrice: " << temp->price << "\n";
+                    temp = temp->next;
+
+                }
+                if (counterForCars == 0){
+                    std::cout << "There are no cars older than 10 years and cheaper than 5000\n";
+                    break;
+                }
+                else{
+                    std::cout << "List with cars older than 10 years and cheaper than 5000:\n";
+                    temp = carsHead;
+                    while (temp){
+                        if (temp->year < currentYear - 10 && temp->price < 5000){
+                            std::cout << "----------------\n";
+                            std::cout << "Brand: " << temp->brand << "\nYear: " << temp->year << "\nPrice: " << temp->price << "\n";
+                        }
+                        temp = temp->next;
+                    }
+                }   
                 clearList();
             }
             break;
@@ -177,6 +283,10 @@ int main() {
                 std::cout << "Enter number of elements in list:\n";
                 int num;
                 std::cin >> num;
+                if (num <=0){
+                    std::cout << "List should contain at least 1 element\n";
+                    break;
+                }
                 fillList(num);
                 std::cout << "Your list: \n";
                 showList(head);
@@ -216,6 +326,7 @@ int main() {
                 std::cout << "List after deleting even numbers: \n";
                 showList(head);
                 clearList();
+                delete[] duplicates;
             }
             break;
             default:
