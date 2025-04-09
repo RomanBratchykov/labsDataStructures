@@ -5,10 +5,9 @@ int sumTillNumber(int number){
     return number + sumTillNumber(number - 1);
 }
 
-int reverseNumber(int number){
-    if (number == 0) return 0;
-    std::cout << number % 10;
-    return reverseNumber(number / 10);
+int reverseNumber(int number, int reversed = 0){
+    if (number == 0) return reversed;
+    return reverseNumber(number / 10,  reversed * 10 + number % 10);
 
 }
 
@@ -50,7 +49,7 @@ int main() {
             std::cout << "Enter number\n";
             int number;
             std::cin >> number;
-            reverseNumber(number);
+            std::cout << "reverse number is " << reverseNumber(number) << "\n";
             std::cout << "\n";
         }
         break;
