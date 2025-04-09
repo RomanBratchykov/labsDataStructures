@@ -51,6 +51,10 @@ int main() {
             std::cout << "Enter number\n";
             int number;
             std::cin >> number;
+            if (number == 0 || number == -1){
+                std::cout << "You can`t enter this number\n";
+                break;
+            }
             if (number < 0){
                 std::cout << "Sum till " << number << " is " << -sumTillNumber(number) << "\n";
                 break;
