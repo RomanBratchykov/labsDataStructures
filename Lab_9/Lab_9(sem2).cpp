@@ -2,6 +2,7 @@
 #include <ctime>
 #include <fstream>
 #include <sstream>
+
 struct Tree {
     int value;
     Tree* right;
@@ -100,7 +101,6 @@ Tree* copyTree(Tree* original, Tree*& evenTree, Tree*& oddTree){
     }
     
     return newNode;
-
 }
 
 int findDepth(Tree* node){

@@ -59,6 +59,11 @@
         "chrono": "cpp",
         "ratio": "cpp",
         "cstring": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "list": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "cstdarg": "cpp"
     }
 }
