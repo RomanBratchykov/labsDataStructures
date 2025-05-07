@@ -8,28 +8,25 @@ struct Time {
     int seconds;
 
     void fix(){
-        if (seconds >= 60) {
+        if (seconds < 0) {
+            int borrow = (abs(seconds) + 59) / 60;
+            minutes -= borrow;
+            seconds += borrow * 60;
+        } else if (seconds >= 60) {
             minutes += seconds / 60;
             seconds %= 60;
         }
-        if (minutes >= 60) {
+    
+        if (minutes < 0) {
+            int borrow = (abs(minutes) + 59) / 60;
+            hours -= borrow;
+            minutes += borrow * 60;
+        } else if (minutes >= 60) {
             hours += minutes / 60;
             minutes %= 60;
         }
-        if (hours >= 24) {
-            hours %= 24;
-        }
-        if (hours < 0) {
-            hours = 24 + hours % 24;
-        }
-        if (minutes < 0) {
-            minutes -= seconds / 60;
-            seconds %= 60;
-        }
-        if (seconds < 0) {
-            seconds = 60 + seconds % 60;
-            minutes -= 1;
-        }
+    
+        hours = ((hours % 24) + 24) % 24;
     }
     Time(int h = 0, int m = 0, int s = 0){
         hours = h;
@@ -51,7 +48,7 @@ struct Time {
     std::string getTime() {
         std::stringstream ss;
         ss << (hours < 10 ? "0" : "") << hours << ":"
-           << (minutes < 10 ? "0" : "") << minutes << ":"
+        <<  (minutes < 10 ? "0" : "") << minutes << ":"
            << (seconds < 10 ? "0" : "") << seconds;
         return ss.str();
     }
@@ -184,9 +181,13 @@ int main(){
                 for (int i = 0; i < size; i++){
                     std::string station = stations[rand() % 10];
                     Time timeOfDeparture = Time(rand() % 100, rand() % 100, rand() % 100);
-                    Time timeOfArrival = Time(rand() % 100, rand() % 100, rand() % 100);
+                    Time timeOfArrival = Time(rand() % 100, rand() % 100, rand() % 100); 
                     arr[i] = Train(i, station, timeOfDeparture, timeOfArrival);
+                    if (timeOfArrival < timeOfDeparture){
+                        i--;
+                    }
                 }
+                   
                 std::cout << "Your array of trains\n";
                 for (int i = 0; i < size; i++){
                     std::cout << "---------------------------------\n";
@@ -196,6 +197,7 @@ int main(){
                 std::cout << "Train with longest roadtime with fuction\n";
                 Train longest = longestRoadtime(arr, size);
                 longest.printTrain();
+                std::cout << "In minutes " << longest.toMinutes() << "\n";
                 std::cout << "Sorted array\n";
                 quickSort(arr, 0, size - 1);
                 for (int i = 0; i < size; i++){
