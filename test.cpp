@@ -2,16 +2,36 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <exception>
+#include <vector>
+#include <iomanip>
 
-int main(){
-    for (int i = 0; i < 10; i++){
-        std::cout << "\rProcessing. " << std::flush;
-        std::chrono::milliseconds timespan(1000);
-        std::this_thread::sleep_for(timespan);
-        std::cout << "\rProcessing.. " << std::flush;
-        std::this_thread::sleep_for(timespan);
-        std::cout << "\rProcessing... " << std::flush;
-        std::this_thread::sleep_for(timespan);
+class Transport{
+    public:
+    std::string type;
+    std::string name;
+    int year;
+    Transport(std::string type, std::string name, int year){
+        this->type = type;
+        this->name = name;
+        this->year = year;
     }
-    std::cout << "\rProcesssing... Done!" << "\n";
+    ~Transport(){}
+};
+
+class Car : public Transport{
+    int runningTotal;
+
+    public:
+    Car(std::string name, int year, int runningTotal) : Transport("Car", name, year){
+        this->runningTotal = runningTotal;
+    }
+    void showCar(){
+        std::cout << "Car name: " << name << ", year: " << year << ", running total: " << runningTotal << "\n";
+    }
+};
+int main(){
+
+
+
 }
