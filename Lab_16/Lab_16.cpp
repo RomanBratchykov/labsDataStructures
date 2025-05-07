@@ -163,6 +163,71 @@ void quickSort(Train* arr, int start, int end){
     }
 } 
 
+struct TV{
+    std::string manufactorer;
+    int sizeOfScreen;
+    int price;
+    TV(){
+        this->manufactorer = "LG";
+        this->sizeOfScreen = 43;
+        this->price = 15000;
+    }
+    TV(std::string manufactorer, int sizeOfScreen, int price){
+        this->manufactorer = manufactorer;
+        this->sizeOfScreen = sizeOfScreen;
+        this->price = price;
+    }
+    void print(){
+        std::cout << "TV with manufactorer in " << this->manufactorer << " with size of screen " << this->sizeOfScreen << " and price " << this->price <<"\n";
+    }
+    bool operator<(const TV& t2){
+        if (this->sizeOfScreen < t2.sizeOfScreen) return true;
+        if (this->sizeOfScreen > t2.sizeOfScreen) return false;
+        return false;
+    }
+    bool operator>(const TV& t2)
+    {
+        if (this->sizeOfScreen > t2.sizeOfScreen) return true;
+        if (this->sizeOfScreen < t2.sizeOfScreen) return false;
+        return false;
+    }
+    bool operator<=(const TV& t2){
+        if (this->sizeOfScreen <= t2.sizeOfScreen) return true;
+        if (this->sizeOfScreen >=t2.sizeOfScreen) return false;
+        return false;
+    }
+    bool operator>=(const TV& t2)
+    {
+        if (this->sizeOfScreen >= t2.sizeOfScreen) return true;
+        if (this->sizeOfScreen <= t2.sizeOfScreen) return false;
+        return false;
+    }
+};
+
+void shellAsc(TV* arr, int size){
+    for (int gap = size/2; gap > 0; gap /= 2) {
+        for (int i = gap; i < size; i++) {
+            TV temp = arr[i];
+            int j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap){
+                arr[j] = arr[j - gap];
+            }
+            arr[j] = temp;
+        }
+    }
+}
+
+void gnomeDesc(TV* arr, int size){
+    int index  = 0;
+    while (index < size){
+        if (index == 0)  index++;
+        if (arr[index] <= arr[index - 1]) index++;
+        else {
+            std::swap(arr[index], arr[index - 1]);
+            index--;
+        }
+    }
+}
 int main(){
     srand(time(0));
     while (1){
@@ -209,7 +274,52 @@ int main(){
                 arr[size - 1].printTrain();
             }
             break;
-            case 2:
+            case 2:{
+                std::cout << "Enter number of TV's\n";
+                int num;
+                std::cin>> num;
+                TV* arr = new TV[num];
+                for (int i = 0; i < num; i++){
+                    std::string manufactorer = stations[rand() % 10];
+                    int sizeOfScreen = rand() % 40 + 20;
+                    int price = rand() % 30000 + 10000;
+                    arr[i] = TV(manufactorer, sizeOfScreen, price);
+                }
+                std::cout << "Your array of TV's\n";
+                for (int i = 0; i < num; i++){
+                    std::cout << "--------------------------------\n";
+                    arr[i].print();
+                }
+                std::cout << "\nChoose sorting(1 - asc, 2 - desc)\n";
+                int choice;
+                std::cin >> choice;
+                switch(choice){
+                    case 1:{
+                        std::cout << "Your sorted array\n";
+                        shellAsc(arr, num);
+                        for (int i = 0; i < num; i++){
+                            std::cout << "---------------------------------\n";
+                            arr[i].print();
+                        }
+                        std::cout << "\n";
+                    }
+                    break;
+                    case 2:{
+                        std::cout << "Your sorted array\n";
+                        gnomeDesc(arr, num);
+                        for (int i = 0; i < num; i++){
+                            std::cout << "---------------------------------\n";
+                            arr[i].print();
+                        }
+                        std::cout << "\n";
+                    }
+                    break;
+                    default:
+                        std::cout << "wrong choice\n";
+                    break;
+                }
+
+            }
             break;
             default:
                 std::cout << "wrong choice\n";
