@@ -1,37 +1,24 @@
-#include <list>
 #include <iostream>
-#include <chrono>
-#include <thread>
-#include <exception>
-#include <vector>
-#include <iomanip>
+#include <locale>
+#include <io.h>
+#include <fcntl.h>
+#include <string>
+std::wstring alphabetUkr = L"абвгґдеєжзийіїйклмнопрстуфхцчшщьюя";
 
-class Transport{
-    public:
-    std::string type;
-    std::string name;
-    int year;
-    Transport(std::string type, std::string name, int year){
-        this->type = type;
-        this->name = name;
-        this->year = year;
+void visioner(std::wstring& alphabet){
+    for (int i = 0; i < alphabet.size(); i++){
+        wchar_t temp = alphabet[i];
+        for (int j = 0; j < alphabet.size(); j++){
+            std::wcout << alphabet[j];
+        }
+        std::wcout << L"\n";
+        for (int i = 0; i < alphabet.size() - 1; i++){
+            std::swap(alphabet[i], alphabet[i + 1]);
+        }
     }
-    ~Transport(){}
-};
-
-class Car : public Transport{
-    int runningTotal;
-
-    public:
-    Car(std::string name, int year, int runningTotal) : Transport("Car", name, year){
-        this->runningTotal = runningTotal;
-    }
-    void showCar(){
-        std::cout << "Car name: " << name << ", year: " << year << ", running total: " << runningTotal << "\n";
-    }
-};
+}
 int main(){
-
-
-
+    setlocale(LC_ALL, "");
+    _setmode(_fileno(stdout), _O_U8TEXT);
+    visioner(alphabetUkr);
 }
