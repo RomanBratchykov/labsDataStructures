@@ -11,8 +11,30 @@
 #include <iomanip>
 #include <limits>
 #include <algorithm>
+#include <windows.h>
+std::wstring ukrAlphabet = L"абвгґдеєжзиийклмнопрстуфхцчшщьюя";
 
-const std::wstring ukrAlphabet = L"абвгґдеєжзиийклмнопрстуфхцчшщьюя";
+void vegenerTable(std::wstring& alphabet){
+    for (int i = 0; i < alphabet.size(); i++){
+        wchar_t temp = alphabet[i];
+        for (int j = 0; j < alphabet.size(); j++){
+            std::wcout << alphabet[j];
+        }
+        std::wcout << L"\n";
+        for (int i = 0; i < alphabet.size() - 1; i++){
+            std::swap(alphabet[i], alphabet[i + 1]);
+        }
+    }
+}
+
+const wchar_t PolybiusSquare[6][6] = {
+    {L'а', L'б', L'в', L'г', L'ґ', L'д'},
+    {L'е', L'є', L'ж', L'з', L'и', L'і'},
+    {L'й', L'к', L'л', L'м', L'н', L'о'},
+    {L'п', L'р', L'с', L'т', L'у', L'ф'},
+    {L'х', L'ц', L'ч', L'ш', L'щ', L'ь'},
+    {L'ю', L'я', L' ', L'.', L',', L'!'}
+};
 
 std::map<wchar_t, wchar_t> simpleEncodings = {
     {L'о', L'а'}, {L'а', L'б'}, {L'е', L'в'}, {L'і', L'г'}, {L'н', L'ґ'},
@@ -175,6 +197,60 @@ std::wstring simpleDecoding(const std::wstring& text) {
     }
     return result;
 }
+
+std::wstring squareEncoding(const std::wstring& text) {
+    std::wstring result;
+    for (wchar_t ch : text) {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                if (PolybiusSquare[i][j] == ch) {
+                    result += std::to_wstring(i + 1) + std::to_wstring(j + 1);
+                    break;
+                }
+            }
+        }
+    }
+    return result;
+}
+std::wstring squareDecoding(const std::wstring& text) {
+    std::wstring result;
+    for (size_t i = 0; i < text.length(); i += 2) {
+        int row = text[i] - L'0' - 1;
+        int col = text[i + 1] - L'0' - 1;
+        if (row >= 0 && row < 6 && col >= 0 && col < 6) {
+            result += PolybiusSquare[row][col];
+        }
+    }
+    return result;
+}
+std::wstring vegenere(const std::wstring& text, const std::wstring& key){
+    std::wstring result = text;
+    int keyLength = sizeof(key);
+    int index = 0;
+    for (int i = 0; i < text.length(); i++){
+        if (index >= keyLength){
+            index = 0;
+        }
+        result[i] = text[i] + key[index];
+        index++;
+    }
+    return result;
+}
+
+std::wstring vegenereDecrypt(const std::wstring& text, const std::wstring& key){
+    std::wstring result = text;
+    int keyLength = sizeof(key);
+    int index = 0;
+    for (int i = 0; i < text.length(); i++){
+        if (index >= keyLength){
+            index = 0;
+        }
+        result[i] = text[i] - key[index];
+        index++;
+    }
+    return result;
+}
+
 int main() {
     setlocale(LC_ALL, "");
     _setmode(_fileno(stdout), _O_U8TEXT);
@@ -215,7 +291,7 @@ int main() {
                 break;
             case 2:
                 {
-                     std::wcout << L"Select input method (1 - console, 2 - file): ";
+                    std::wcout << L"Select input method (1 - console, 2 - file): \n";
                     int choice;
                     std::wcin >> choice;
                     std::wstring text;
@@ -248,16 +324,54 @@ int main() {
                         std::wcerr << L"Invalid input method.\n";
                         continue;
                     }
+                    std::wcout << L"Enter key\n";
+                    std::wstring key;
+                    std::wcin >> key;
+                    std::wcout << L"Original text: " << text << L"\n";
+                    std::wcout << L"Key: " << key << L"\n";
+                    std::wstring encoded = vegenere(text, key);
+                    std::wcout << L"Encoded text: " << encoded << L"\n";
+                    std::wcout << L"Decoded text: " << vegenereDecrypt(encoded, key) << L"\n";
+                    vegenerTable(ukrAlphabet);
                 }
                 break;
             case 4:
-                std::wcout << L"Task 4 selected.\n";
+                {
+                    std::wcout << L"Select input method (1 - console, 2 - file): \n";
+                    int choice;
+                    std::wcin >> choice;
+                    std::wstring text;
+                    if (choice == 1) {
+                        text = enterText();
+                    } else if (choice == 2) {
+                        text = readFile("text.txt");
+                    } else {
+                        std::wcerr << L"Invalid input method.\n";
+                        continue;
+                    }
+                    std::wcout << L"Original: " << text << L"\n";
+                    std::wcout << L"Encoded: " << squareEncoding(text) << L"\n";
+                    std::wcout << L"Decoded: " << squareDecoding(squareEncoding(text)) << L"\n";
+                }
                 break;
             case 5:
                 std::wcout << L"Task 5 selected.\n";
                 break;
             case 6:
-                std::wcout << L"Task 6 selected.\n";
+                {
+                    std::wcout << L"Select input method (1 - console, 2 - file): \n";
+                    int choice;
+                    std::wcin >> choice;
+                    std::wstring text;
+                    if (choice == 1) {
+                        text = enterText();
+                    } else if (choice == 2) {
+                        text = readFile("morse.txt");
+                    } else {
+                        std::wcerr << L"Invalid input method.\n";
+                        continue;
+                    }
+                }
                 break;
             default:
                 std::wcerr << L"Invalid task number.\n";
