@@ -12,19 +12,21 @@
 #include <limits>
 #include <algorithm>
 #include <windows.h>
-std::wstring ukrAlphabet = L"абвгґдеєжзиийклмнопрстуфхцчшщьюя";
+#include <unordered_set>
+std::wstring ukrAlphabet = L"абвгґдеєжзииійклмнопрстуфхцчшщьюя";
 
-void vegenerTable(std::wstring& alphabet){
-    for (int i = 0; i < alphabet.size(); i++){
-        wchar_t temp = alphabet[i];
-        for (int j = 0; j < alphabet.size(); j++){
-            std::wcout << alphabet[j];
-        }
-        std::wcout << L"\n";
-        for (int i = 0; i < alphabet.size() - 1; i++){
-            std::swap(alphabet[i], alphabet[i + 1]);
+std::wstring keepUniqueCharacters(const std::wstring& input) {
+    std::wstring result;
+    std::unordered_set<wchar_t> seen;
+
+    for (wchar_t ch : input) {
+        if (seen.find(ch) == seen.end()) {
+            seen.insert(ch);
+            result += ch;
         }
     }
+
+    return result;
 }
 
 const wchar_t PolybiusSquare[6][6] = {
@@ -34,6 +36,16 @@ const wchar_t PolybiusSquare[6][6] = {
     {L'п', L'р', L'с', L'т', L'у', L'ф'},
     {L'х', L'ц', L'ч', L'ш', L'щ', L'ь'},
     {L'ю', L'я', L' ', L'.', L',', L'!'}
+};
+
+std::map<wchar_t, std::wstring> morseCode = {
+    {L'а', L".-"}, {L'б', L"-..."}, {L'в', L".--."}, {L'г', L"--."}, {L'ґ', L"--.."},
+    {L'д', L"-.."}, {L'е', L"."}, {L'є', L".-.."}, {L'ж', L"...-."}, {L'з', L"--.."},
+    {L'и', L".."}, {L'і', L"..-."}, {L'й', L".---"}, {L'к', L"-.-"}, {L'л', L".-.."},
+    {L'м', L"--"}, {L'н', L"-."}, {L'о', L"---"}, {L'п', L".--."}, {L'р', L".-."},
+    {L'с', L"..."}, {L'т', L"-"}, {L'у', L"..-"}, {L'ф', L"..-."}, {L'x', L"-..-"},
+    {L'ц', L"-.-."}, {L'ч', L"---."}, {L'ш', L"----"}, {L'щ', L"--.-"}, {L'ь', L"-..-"},
+    {L'ю', L"..--"}, {L'я', L".-.-"}, {L' ', L" "}
 };
 
 std::map<wchar_t, wchar_t> simpleEncodings = {
@@ -72,6 +84,19 @@ std::map<wchar_t, double> getLetterFrequencies(const std::wstring& text) {
     }
 
     return frequencies;
+}
+
+void vegenerTable(std::wstring& alphabet){
+    for (int i = 0; i < alphabet.size(); i++){
+        wchar_t temp = alphabet[i];
+        for (int j = 0; j < alphabet.size(); j++){
+            std::wcout << alphabet[j];
+        }
+        std::wcout << L"\n";
+        for (int i = 0; i < alphabet.size() - 1; i++){
+            std::swap(alphabet[i], alphabet[i + 1]);
+        }
+    }
 }
 
 std::wstring decrypt(const std::wstring& text, int shift) {
@@ -212,6 +237,7 @@ std::wstring squareEncoding(const std::wstring& text) {
     }
     return result;
 }
+
 std::wstring squareDecoding(const std::wstring& text) {
     std::wstring result;
     for (size_t i = 0; i < text.length(); i += 2) {
@@ -223,6 +249,7 @@ std::wstring squareDecoding(const std::wstring& text) {
     }
     return result;
 }
+
 std::wstring vegenere(const std::wstring& text, const std::wstring& key){
     std::wstring result = text;
     int keyLength = sizeof(key);
@@ -251,13 +278,140 @@ std::wstring vegenereDecrypt(const std::wstring& text, const std::wstring& key){
     return result;
 }
 
+std::wstring morseEncoding(const std::wstring& text) {
+    std::wstring result;
+    for (wchar_t ch : text) {
+        if (morseCode.find(ch) != morseCode.end()) {
+            result += morseCode[ch] + L" ";
+        } else {
+            result += ch;
+        }
+    }
+    return result;
+}
+
+std::wstring morseDecoding(const std::wstring& text) {
+    std::wstring result;
+    std::wistringstream iss(text);
+    std::wstring morseChar;
+    while (iss >> morseChar) {
+        auto it = std::find_if(morseCode.begin(), morseCode.end(),
+                               [&morseChar](const std::pair<wchar_t, std::wstring>& pair) { return pair.second == morseChar; });
+        if (it != morseCode.end()) {
+            result += it->first;
+        } else {
+            result += L' ';
+        }
+    }
+    return result;
+}
+
+wchar_t matrix[6][6];
+
+void buildMatrix(const std::wstring& key) {
+    std::wstring temp = key;
+    std::transform(temp.begin(), temp.end(), temp.begin(), towlower);
+    temp = keepUniqueCharacters(temp);
+    std::wcout << L"Key: " << temp << L"\n";
+    for (wchar_t ch : ukrAlphabet) {
+        if (temp.find(ch) == std::wstring::npos) {
+            temp += ch;
+        }
+    }
+
+    int index = 0;
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            if (index < temp.length()) {
+                matrix[i][j] = temp[index++];
+            } else {
+                matrix[i][j] = L' ';
+            }
+        }
+    }
+}
+
+std::pair<int, int> findInMatrix(wchar_t ch) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            if (matrix[i][j] == ch) {
+                return {i, j};
+            }
+        }
+    }
+    return {0, 0};
+}
+
+std::vector<std::wstring> createBigrams(const std::wstring& text) {
+    std::wstring processedText;
+
+    for (size_t i = 0; i < text.length(); ++i) {
+        processedText += text[i];
+
+        if (i + 1 < text.length() && text[i] == text[i + 1]) {
+            processedText += L'х'; 
+        }
+    }
+
+
+    std::vector<std::wstring> result;
+    for (size_t i = 0; i < processedText.length(); i += 2) {
+        if (i + 1 < processedText.length()) {
+            result.push_back(processedText.substr(i, 2));
+        } else {
+            result.push_back(processedText.substr(i, 1) + L'х'); 
+        }
+    }
+    return result;
+}
+
+std::wstring process(const std::wstring text, const std::wstring& key, bool encrypt) {
+    buildMatrix(key);
+    std::vector<std::wstring> bigrams = createBigrams(text);
+    std::wstring result;
+
+    for (const auto& pair : bigrams) {
+        auto [r1, c1] = findInMatrix(pair[0]);
+        auto [r2, c2] = findInMatrix(pair[1]);
+
+        if (r1 == r2) {
+            result += matrix[r1][(c1 + (encrypt ? 1 : 5)) % 6];
+            result += matrix[r2][(c2 + (encrypt ? 1 : 5)) % 6];
+        } else if (c1 == c2) {
+            result += matrix[(r1 + (encrypt ? 1 : 5)) % 6][c1];
+            result += matrix[(r2 + (encrypt ? 1 : 5)) % 6][c2];
+        } 
+        else {
+            result += matrix[r1][c2];
+            result += matrix[r2][c1];
+        }
+    }
+    
+    return result;
+}
+
+void morseSound(wchar_t ch){
+    if (ch == L'.'){
+        Beep(500, 500);
+    }
+    else if (ch == L'-'){
+        Beep(500, 1000);
+    }
+    else if (ch == L' '){
+        Sleep(500);
+    }
+    else{
+        std::wcerr << L"Invalid Morse code character.\n";
+    }
+}
+
 int main() {
     setlocale(LC_ALL, "");
     _setmode(_fileno(stdout), _O_U8TEXT);
     _setmode(_fileno(stdin), _O_U8TEXT);
 
     while (true) {
-        std::wcout << L"\nChoose a task (1-6, 0 for exit)): ";
+        std::wcout << L"\nChoose a task (1-6, 0 for exit)): \n";
         int task;
         std::wcin >> task;
         if (task == 0) break;
@@ -355,11 +509,50 @@ int main() {
                 }
                 break;
             case 5:
-                std::wcout << L"Task 5 selected.\n";
-                break;
-            case 6:
                 {
-                    std::wcout << L"Select input method (1 - console, 2 - file): \n";
+                     std::wcout << L"Select input method (1 - console, 2 - file): \n";
+                    int choice;
+                    std::wcin >> choice;
+                    std::wstring text;
+                    if (choice == 1) {
+                        text = enterText();
+                    } else if (choice == 2) {
+                        text = readFile("text5.txt");
+                    } else {
+                        std::wcerr << L"Invalid input method.\n";
+                        continue;
+                    }
+                    std::wcout << L"Enter key\n";
+                    std::wstring key;
+                    std::wcin >> key;
+                    std::wstring encoded = process(text, key, 0);
+                    std::wcout << L"Original text: " << text << L"\n";
+                    std::wcout << L"Encoded text: " << encoded << L"\n";
+                    std::wcout << L"Decoded text: \n" << process(encoded, key, 1) << L"\n";
+                }
+                break;
+            case 6: 
+                {
+                    std::wcout << L"Select method to code(from morse - 1, from text - 2): \n";
+                    int choice;
+                    std::wcin >> choice;
+                    if (choice == 1) {
+                        std::wcout << L"Select input method (1 - console, 2 - file): \n";
+                        int choice;
+                        std::wcin >> choice;
+                        std::wstring text;
+                        if (choice == 1) {
+                            text = enterText();
+                        } else if (choice == 2) {
+                            text = readFile("morse.txt");
+                        } else {
+                            std::wcerr << L"Invalid input method.\n";
+                            continue;
+                        }
+                        std::wcout << L"Original text: " << text << L"\n";
+                        std::wcout << L"Decoded text: " << morseDecoding(text) << L"\n";
+                    } else if (choice == 2) {
+                    std::wcout << L"Select input mto code() - console, 2 - file): \n";
                     int choice;
                     std::wcin >> choice;
                     std::wstring text;
@@ -371,6 +564,14 @@ int main() {
                         std::wcerr << L"Invalid input method.\n";
                         continue;
                     }
+                    std::wstring morseText = morseEncoding(text);
+                    std::wcout << L"Original text: " << text << L"\n";
+                    std::wcout << L"Encoded text: " << morseText << L"\n";
+                    for (wchar_t& ch : morseText) {
+                        morseSound(ch);
+                    }
+                    std::wcout << L"Decoded text: " << morseDecoding(morseText) << L"\n";
+                }
                 }
                 break;
             default:
