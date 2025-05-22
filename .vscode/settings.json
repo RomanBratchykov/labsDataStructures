@@ -66,6 +66,8 @@
         "thread": "cpp",
         "cstdarg": "cpp",
         "map": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp"
     }
 }

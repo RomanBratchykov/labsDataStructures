@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <windows.h>
 #include <unordered_set>
-std::wstring ukrAlphabet = L"абвгґдеєжзииійклмнопрстуфхцчшщьюя";
+std::wstring ukrAlphabet = L"абвгґдеєжзииіїйклмнопрстуфхцчшщьюя";
 
 std::wstring keepUniqueCharacters(const std::wstring& input) {
     std::wstring result;
@@ -312,7 +312,6 @@ void buildMatrix(const std::wstring& key) {
     std::wstring temp = key;
     std::transform(temp.begin(), temp.end(), temp.begin(), towlower);
     temp = keepUniqueCharacters(temp);
-    std::wcout << L"Key: " << temp << L"\n";
     for (wchar_t ch : ukrAlphabet) {
         if (temp.find(ch) == std::wstring::npos) {
             temp += ch;
