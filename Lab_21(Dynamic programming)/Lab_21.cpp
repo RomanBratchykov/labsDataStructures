@@ -88,6 +88,7 @@ void leastCostMethod(const std::vector<int>& supply, const std::vector<int>& dem
 
     std::cout << "\nTotal transportation cost: " << totalCost << " UAH\n";
 }
+
 int main(){
     std::cout << "Enter number of task(1-2, 0 for exit): \n";
     int task;
