@@ -2,6 +2,8 @@
 #include <vector>
 #include <iomanip>
 const int MAX_SALARY = 380000;
+const int WAREHOUSES = 3;
+const int STORES = 3;
 struct Position{
     std::string name;
     int coefficient;
@@ -9,6 +11,83 @@ struct Position{
     double salaryPerPerson;
     double totalSalary;
 };
+
+void northwestCorner(const std::vector<int>& supply, const std::vector<int>& demand, const std::vector<std::vector<int>>& prices) {
+    std::vector<std::vector<int>> allocation(WAREHOUSES, std::vector<int>(STORES, 0));
+    std::vector<int> s = supply;
+    std::vector<int> d = demand;
+
+    int i = 0, j = 0;
+    int totalCost = 0;
+
+    while (i < WAREHOUSES && j < STORES) {
+        int qty = std::min(s[i], d[j]);
+        allocation[i][j] = qty;
+        totalCost += qty * prices[i][j];
+        s[i] -= qty;
+        d[j] -= qty;
+
+        if (s[i] == 0) i++;
+        else if (d[j] == 0) j++;
+    }
+
+    std::cout << "North-West Corner Allocation:\n";
+    for (const auto& row : allocation) {
+        for (int val : row)
+            std::cout << std::setw(6) << val;
+        std::cout << '\n';
+    }
+
+    std::cout << "\nTotal transportation cost: " << totalCost << " UAH\n";
+}
+
+void leastCostMethod(const std::vector<int>& supply, const std::vector<int>& demand, const std::vector<std::vector<int>>& prices) {
+    std::vector<std::vector<int>> allocation(WAREHOUSES, std::vector<int>(STORES, 0));
+    std::vector<int> s = supply;
+    std::vector<int> d = demand;
+    std::vector<std::vector<bool>> used(WAREHOUSES, std::vector<bool>(STORES, false));
+
+    int totalCost = 0;
+
+    while (true) {
+        int minCost = prices[0][0];
+        int row = -1, col = -1;
+
+        for (int i = 0; i < WAREHOUSES; ++i) {
+            for (int j = 0; j < STORES; ++j) {
+                if (!used[i][j] && prices[i][j] < minCost) {
+                    minCost = prices[i][j];
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+
+        if (row == -1 || col == -1) break;
+
+        int qty = std::min(s[row], d[col]);
+        allocation[row][col] = qty;
+        totalCost += qty * prices[row][col];
+        s[row] -= qty;
+        d[col] -= qty;
+        if (s[row] == 0)
+            for (int j = 0; j < STORES; ++j)
+                used[row][j] = true;
+
+        if (d[col] == 0)
+            for (int i = 0; i < WAREHOUSES; ++i)
+                used[i][col] = true;
+    }
+
+    std::cout << "Least-Cost Allocation:\n";
+    for (const auto& row : allocation) {
+        for (int val : row)
+            std::cout << std::setw(6) << val;
+        std::cout << '\n';
+    }
+
+    std::cout << "\nTotal transportation cost: " << totalCost << " UAH\n";
+}
 int main(){
     std::cout << "Enter number of task(1-2, 0 for exit): \n";
     int task;
@@ -76,7 +155,9 @@ int main(){
                 return 0;
             }
             if (choice == 1){
-
+                northwestCorner(stocks, need, matrix);
+            } else {
+                leastCostMethod(stocks, need, matrix);
             }
         }
         break;
