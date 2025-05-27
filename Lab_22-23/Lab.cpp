@@ -6,6 +6,8 @@
 #include <sstream>
 #include <string>
 #include <ctime>
+#include <list>
+#include <set>
 int main(){
     srand(time(0));
     while (1){
@@ -97,11 +99,61 @@ int main(){
             }
             break;
             case 2:{
-
+                std::ifstream file("fileNames.txt");
+                if (!file.is_open()){
+                    std::cout << "File not found\n";
+                    return 0;
+                }
+                std::string line;
+                std::vector<std::string> names;
+                while (std::getline(file, line)){
+                    std::stringstream ss(line);
+                    std::string name;
+                    while (ss >> name){
+                        names.push_back(name);
+                    }
+                }
+                for (auto element : names){
+                    std::cout << element << " ";
+                }
+                std::cout << "\n";
             }
             break;
             case 3:{
-
+                std::list<int> numbersList;
+                std::cout << "Enter how much numbers you want to be in list: \n";
+                int numbers;
+                std::cin >> numbers;
+                for (int i = 0; i < numbers; i++){
+                    int number;
+                    std::cout << "Enter number " << i + 1 << ": ";
+                    std::cin >> number;
+                    numbersList.push_back(number);
+                }
+                for (std::list<int>::iterator i = numbersList.begin(); i != numbersList.end(); i++){
+                    std::cout << *i << " ";
+                }
+                std::cout << "\n";
+                std::list<int> randNums;
+                for (int i = 0; i < numbers; i++){
+                    int number = rand() % 10;
+                    randNums.push_back(number);
+                }
+                for (std::list<int>::iterator i = randNums.begin(); i != randNums.end(); i++){
+                    std::cout << *i << " ";
+                }
+                std::cout << "\n";
+                numbersList.sort(std::greater<int>());
+                randNums.sort(std::greater<int>());
+                numbersList.merge(randNums, std::greater<int>());
+                std::cout << "Merged list: \n";
+                for (std::list<int>::iterator i = numbersList.begin(); i != numbersList.end(); i++){
+                    std::cout << *i << " ";
+                }
+                std::cout << "\n";
+                std::list<int> uniques = numbersList;
+                uniques.unique();
+                std::cout << "Number of unique elements: " << uniques.size() << "\n";
             }
             break;
             case 4:{
